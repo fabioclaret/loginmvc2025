@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class MainActivity extends AppCompatActivity {
     EditText nomeUsuario, emailUsuario, senhaUsuario;
     Button cadastrar, entrar;
-    UsuarioController usuarioController;
+    UsuarioController controller;
     Usuario usuario;
 
     @Override
@@ -27,38 +27,27 @@ public class MainActivity extends AppCompatActivity {
 
         initComponents();
 
-        cadastrar.setOnClickListener(view -> {
-                    if (validaCampos()) {
-                        usuario = new Usuario();
-                        usuario.setNome(nomeUsuario.getText().toString());
-                        usuario.setEmail(emailUsuario.getText().toString());
-                        usuario.setSenha(senhaUsuario.getText().toString());
-
-                        boolean isCheckUser = usuarioController.checkUser(usuario.getEmail());
-                        if( isCheckUser ) {
-                            Toast.makeText(this, "Usuário já cadastrado", Toast.LENGTH_SHORT).show();
-                        } else {
-                            boolean isCheckUserPass = usuarioController.checkUserPass(usuario.getEmail(), usuario.getSenha());
-                            if( isCheckUserPass ) {
-                                usuarioController.inserir(usuario);
-                                Toast.makeText(this, "Usuário cadastrado com sucesso", Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(this, "Senha incorreta", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         entrar.setOnClickListener(view -> {
             if( validaCampos() ) {
                 usuario = new Usuario();
-                usuario.setNome(nomeUsuario.getText().toString());
-                usuario.setEmail(emailUsuario.getText().toString());
-                usuario.setSenha(senhaUsuario.getText().toString());
-                usuarioController = new UsuarioController(this);
+                String nome = nomeUsuario.getText().toString();
+                String email = emailUsuario.getText().toString();
+                String senha = senhaUsuario.getText().toString();
 
-                boolean isCheckUser = usuarioController.checkUser(usuario.getEmail());
-                boolean isCheckPass = usuarioController.checkUserPass(usuario.getEmail(), usuario.getSenha());
+                usuario.setNome(nome);
+                usuario.setEmail(email);
+                usuario.setSenha(senha);
+
+                controller = new UsuarioController(this);
+
+                boolean isCheckUser = controller.checkUsuario( email );
+                boolean isCheckPass = controller.checkSenha( email, senha );
                 if( isCheckUser && isCheckPass ) {
                     Toast.makeText(this, "Login realizado com sucesso", Toast.LENGTH_SHORT).show();
                 } else {
@@ -69,11 +58,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        cadastrar.setOnClickListener(view -> {
+            if (validaCampos()) {
+                usuario = new Usuario();
+                controller = new UsuarioController(this);
+
+                String nome  = nomeUsuario.getText().toString();
+                String email = emailUsuario.getText().toString();
+                String senha = senhaUsuario.getText().toString();
+
+                usuario.setNome(nome);
+                usuario.setEmail(email);
+                usuario.setSenha(senha);
+
+                boolean isCheckUser = controller.checkUsuario( email );
+                if( isCheckUser ) {
+                    Toast.makeText(this, "Usuário já cadastrado", Toast.LENGTH_SHORT).show();
+                } else {
+                    controller.inserir(usuario);
+                    Toast.makeText(this, "Usuário cadastrado com sucesso", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
+
     }
 
     private boolean validaCampos() {

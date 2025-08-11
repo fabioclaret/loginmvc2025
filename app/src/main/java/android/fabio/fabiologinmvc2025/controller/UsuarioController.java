@@ -18,7 +18,7 @@ public class UsuarioController extends AppDataBase implements iCRUD<Usuario>{
     @Override
     public boolean inserir(Usuario usuario) {
         dadosDoObjeto = new ContentValues();
-        dadosDoObjeto.put("nome", usuario.getNome());
+        dadosDoObjeto.put("nome" , usuario.getNome());
         dadosDoObjeto.put("email", usuario.getEmail());
         dadosDoObjeto.put("senha", usuario.getSenha());
 
@@ -43,5 +43,11 @@ public class UsuarioController extends AppDataBase implements iCRUD<Usuario>{
     @Override
     public List<Usuario> listar() {
         return Collections.emptyList();
+    }
+    public boolean checkSenha(String email, String senha) {
+        return checkUserPass(email, senha);
+    }
+    public boolean checkUsuario(String email) {
+        return checkUser(email);
     }
 }

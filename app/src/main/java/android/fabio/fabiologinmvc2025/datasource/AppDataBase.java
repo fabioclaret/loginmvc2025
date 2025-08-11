@@ -39,20 +39,19 @@ public class AppDataBase extends SQLiteOpenHelper {
     }
 
     public boolean checkUserPass(String email, String senha) {
-        boolean retorno = false;
+
         sqLiteDatabase=getWritableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM usuario WHERE email = ? AND senha = ?",
                 new String[]{email, senha});
-        return retorno;
+        return cursor.getCount() > 0;
     }
 
     public boolean checkUser(String email ) {
-        boolean retorno = false;
         sqLiteDatabase=getWritableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM usuario WHERE email = ?",
-                new String[]{email});
-        return retorno;
+                new String[]{email} );
+        return cursor.getCount() >0;
     }
 }
