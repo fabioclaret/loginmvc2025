@@ -44,4 +44,10 @@ public class UsuarioController extends AppDataBase implements iCRUD<Usuario>{
     public List<Usuario> listar() {
         return Collections.emptyList();
     }
+    public boolean checkSenha(String email, String senha) {
+        return checkUserPass(email, senha);
+    }
+    public boolean checkUsuario(String email) {
+        return checkUser(email);
+    }
 }
